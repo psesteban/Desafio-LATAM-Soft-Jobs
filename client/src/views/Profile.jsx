@@ -17,9 +17,9 @@ const Profile = () => {
         window.sessionStorage.removeItem('token')
         setDeveloper(null)
         navigate('/')
-      })
+      } ) 
   }
-
+console.log(getDeveloper)
   useEffect(getDeveloperData, [])
 
   return (

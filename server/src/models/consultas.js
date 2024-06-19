@@ -1,25 +1,46 @@
 import data from './querys.js'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+const { JWT_SECRET } = process.env
 
-export const verificarCredenciales = async (email, password) => {
-  const consulta = "SELECT email FROM usuarios WHERE email = $1 AND password = $2"
-  const values = [email, password]
-  const { rows: [usuario], rowCount }  = await data(consulta, values)
-  const { password: passwordEncriptada } = usuario
+export const verificarCredenciales = async ({ email, password }) => {
+  const consulta = 'SELECT * FROM usuarios WHERE email = $1;'
+  const values = [email]
+  const usuario = await data(consulta, values)
+
+  try {
+  const { password:passwordEncriptada, email: userEmail } = usuario[0]
   const passwordEsCorrecta = bcrypt.compareSync(password, passwordEncriptada)
-  console.log(passwordEsCorrecta)
-  if (!passwordEsCorrecta || !rowCount)
+  if (!passwordEsCorrecta || usuario.length === 0)
   throw { code: 401, message: "Email o contraseña incorrecta" }
-  if (credenciales) {
-    return jwt.sign(email, "az_AZ")
-  }
+  return jwt.sign(userEmail, JWT_SECRET)
+  } catch (error) {
+    return error
+  } 
+   
 }
 
 export const registrarUsuario = async (usuario) => {
-    let { email,  password, rol, lenguage } = usuario
-    const passwordEncriptada = bcrypt.hashSync(password)
-    password = passwordEncriptada
-    const values = [email, password, rol, lenguage]
-    const consulta = "INSERT INTO usuarios (id, email, password, rol, lenguage) values (DEFAULT, $1, $2, $3, $4);"
-   await data(consulta, values)
-    }
+  let { email, password, rol, lenguage } = usuario
+  const passwordEncriptada = bcrypt.hashSync(password)
+  password = passwordEncriptada
+  const values = [email, password, rol, lenguage]
+  const consulta = 'INSERT INTO usuarios (id, email, password, rol, lenguage) values (DEFAULT, $1, $2, $3, $4);'
+  return await data(consulta, values)
+}
+
+export const entregarDatos = async (email) => {
+  const consulta = 'SELECT * FROM usuarios WHERE email = $1;'
+  const values = [email]
+const datos = await data(consulta, values)
+const { rol, lenguage } = datos[0]
+const user = [
+  {
+  'email': email,
+  'rol': rol, 
+  'lenguage': lenguage
+  }
+]
+console.log(user)
+  return user
+}

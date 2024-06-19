@@ -2,7 +2,7 @@ import express from 'express'
 import Router from '../routes/routes.js'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import { logger } from 'logger-express'
+import { serverLog } from '../middleware/middleware_log.js'
 
 dotenv.config()
 const PORT = process.env.PORT ?? 3000
@@ -10,8 +10,7 @@ const PORT = process.env.PORT ?? 3000
 const app = express()
 app.use(cors())
 app.use(express.json())
-app.use(logger())
-
+app.use(serverLog)
 app.use('/', Router)
 
 app.listen(PORT, () => {
