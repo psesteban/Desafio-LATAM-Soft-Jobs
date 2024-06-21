@@ -1,9 +1,11 @@
 import { Router } from 'express'
 import * as controller from '../controllers/usuarios.js'
 import { authMiddleware } from '../middleware/middleware_verify.js'
+import { registerValidator } from '../middleware/register_validator.js'
+import { userValidator } from '../middleware/user_validator.js'
 
 const router = Router()
-router.route('/usuarios').get(authMiddleware, controller.getDatos).post(controller.postNuevoUsuario)
-router.route('/login').post(controller.getCredenciales)
+router.route('/usuarios').get(authMiddleware, controller.getDatos).post(registerValidator, controller.postNuevoUsuario)
+router.route('/login').post(userValidator, controller.getCredenciales)
 
 export default router
