@@ -9,15 +9,13 @@ export const verificarCredenciales = async ({ email, password }) => {
   const usuario = await data(consulta, values)
 
   try {
-  const { password:passwordEncriptada, email: userEmail } = usuario[0]
-  const passwordEsCorrecta = bcrypt.compareSync(password, passwordEncriptada)
-  if (!passwordEsCorrecta || usuario.length === 0)
-  throw { code: 401, message: "Email o contraseña incorrecta" }
-  return jwt.sign(userEmail, JWT_SECRET)
+    const { password: passwordEncriptada, email: userEmail } = usuario[0]
+    const passwordEsCorrecta = bcrypt.compareSync(password, passwordEncriptada)
+    if (!passwordEsCorrecta || usuario.length === 0) { throw { code: 401, message: 'Email o contraseña incorrecta' } }
+    return jwt.sign(userEmail, JWT_SECRET)
   } catch (error) {
     return error
-  } 
-   
+  }
 }
 
 export const registrarUsuario = async (usuario) => {
@@ -32,15 +30,15 @@ export const registrarUsuario = async (usuario) => {
 export const entregarDatos = async (email) => {
   const consulta = 'SELECT * FROM usuarios WHERE email = $1;'
   const values = [email]
-const datos = await data(consulta, values)
-const { rol, lenguage } = datos[0]
-const user = [
-  {
-  'email': email,
-  'rol': rol, 
-  'lenguage': lenguage
-  }
-]
-console.log(user)
+  const datos = await data(consulta, values)
+  const { rol, lenguage } = datos[0]
+  const user = [
+    {
+      email,
+      rol,
+      lenguage
+    }
+  ]
+  console.log(user)
   return user
 }

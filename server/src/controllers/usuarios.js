@@ -12,7 +12,7 @@ export const postNuevoUsuario = (req, res) => sql.registrarUsuario(req.body)
   .catch((error) => res.status(500).json({ status: false, code: 500, message: error })
   )
 
-  export const getDatos = (req, res) => sql.entregarDatos(req.user)
+export const getDatos = (req, res) => sql.entregarDatos(req.user)
   .then((result) => res.status(200).json(result))
   .catch((error) => res.status(500).json(error)
   )
