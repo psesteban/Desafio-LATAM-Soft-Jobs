@@ -11,7 +11,7 @@ export const verificarCredenciales = async ({ email, password }) => {
   try {
     const { password: passwordEncriptada, email: userEmail } = usuario[0]
     const passwordEsCorrecta = bcrypt.compareSync(password, passwordEncriptada)
-    if (!passwordEsCorrecta || usuario.length === 0) { throw { code: 401, message: 'Email o contraseña incorrecta' } }
+    if (!passwordEsCorrecta || usuario.length === 0) throw console.error('Email o contraseña incorrecta')
     return jwt.sign(userEmail, JWT_SECRET)
   } catch (error) {
     return error
@@ -39,6 +39,5 @@ export const entregarDatos = async (email) => {
       lenguage
     }
   ]
-  console.log(user)
   return user
 }
